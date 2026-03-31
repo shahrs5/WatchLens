@@ -1,33 +1,18 @@
 import { GoogleGenAI } from "@google/genai";
 import type { GeminiImagePart } from "./types";
 
-const SYSTEM_PROMPT = `You are a professional watch photography compositor.
+const SYSTEM_PROMPT = `You will receive two images:
+1. SCENE — a photo of a watch in a setting.
+2. REFERENCE — a photo of a different watch.
 
-Your task:
-Replace the watch in the SCENE PHOTO with the watch shown in the WATCH REFERENCE PHOTO(S).
-Keep the background, composition, surface, props, and overall scene exactly as they appear in the SCENE PHOTO.
+Your job: Generate a new image that is the SCENE photo but with the REFERENCE watch swapped in.
 
-WHAT TO TAKE FROM THE SCENE PHOTO (keep unchanged):
-- Background, surface, and environment
-- Composition and framing
-- Camera angle and perspective
-- Any props or surrounding objects
-
-WHAT TO TAKE FROM THE WATCH REFERENCE PHOTO(S) (reproduce exactly):
-- The watch itself — every detail, faithfully
-- Brand logo (exact text, font, position on dial — do NOT alter or hallucinate)
-- Dial style, colour, texture, indices, and all text
-- Hour, minute, and second hand shapes, colours, and current positions
-- Case shape, proportions, material, and finish
-- Strap or bracelet texture, colour, and material
-- Crown and any time-adjusting buttons or pushers
-- Lighting and reflections as they appear on the watch in the reference
-
-The result should look like a professional photograph of the reference watch
-placed naturally into the scene from the scene photo.
-
-Output a square (1:1) or portrait (4:5) image optimised for Instagram.
-Do not add watermarks, borders, or text overlays.`;
+Rules:
+- The ENTIRE watch (case, dial, hands, strap/bracelet, bezel, crown — everything) must come from the REFERENCE. Do NOT mix parts from the two images.
+- The watch must sit in the same position, angle, and orientation as the watch in the SCENE.
+- Keep the SCENE background, lighting, and surroundings unchanged.
+- Reproduce all text and logos on the watch dial exactly as shown in the REFERENCE — do not invent or alter any text.
+- The result should look like a real photograph. No watermarks or borders.`;
 
 export async function generateWatchImage(
   sourceImage: GeminiImagePart,
@@ -67,7 +52,7 @@ export async function generateWatchImage(
   });
 
   parts.push({
-    text: "Now generate the composite: the scene from the SCENE PHOTO with the watch from the WATCH REFERENCE faithfully reproduced in it.",
+    text: "Now swap the watch. Use the ENTIRE watch from the REFERENCE (including its strap/bracelet) and place it in the same position and angle as the watch in the SCENE. Keep the background exactly as-is.",
   });
 
   const response = await ai.models.generateContent({
@@ -75,6 +60,10 @@ export async function generateWatchImage(
     contents: [{ role: "user", parts }],
     config: {
       responseModalities: ["TEXT", "IMAGE"],
+      imageConfig: {
+        imageSize: "2K",
+        aspectRatio: "1:1",
+      },
     },
   });
 
