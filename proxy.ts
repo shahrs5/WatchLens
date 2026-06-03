@@ -8,8 +8,9 @@ export function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
+  const secret = process.env.SESSION_SECRET
   const session = request.cookies.get('wl_session')?.value
-  if (session !== process.env.SESSION_SECRET) {
+  if (!secret || !session || session !== secret) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
