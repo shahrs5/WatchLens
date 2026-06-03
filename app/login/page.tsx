@@ -48,6 +48,10 @@ export default function LoginPage() {
           <span className="text-base font-semibold tracking-tight text-zinc-100">WatchLens</span>
         </div>
 
+        <p className="text-center text-xs text-zinc-500 mb-4">
+          Please contact Shaheer — 03282789912 to use
+        </p>
+
         <form onSubmit={handleSubmit} className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
           <div>
             <label htmlFor="password" className="block text-sm text-zinc-400 mb-1.5">
