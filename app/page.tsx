@@ -1,4 +1,5 @@
 import TabShell from "./components/TabShell";
+import LogoutButton from "./components/LogoutButton";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
           </div>
           <h1 className="text-base font-semibold tracking-tight">WatchLens</h1>
           <span className="text-xs text-zinc-600 ml-auto">AI Watch Photography</span>
+          <LogoutButton />
         </div>
       </header>
 
